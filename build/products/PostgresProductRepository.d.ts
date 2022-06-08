@@ -9,8 +9,8 @@ export declare class PostgresProductRepository implements IProductRepository {
     }): Promise<Product[]>;
     createNewProduct(CreateProductType: any): Promise<Product>;
     getProduct(id: number): Promise<Product | null>;
-    deleteProduct(id: number): Promise<Product>;
-    updateProduct(id: number, UpdateProductType: any): Promise<Product>;
-    private removeNullOrUndefined;
+    deleteProduct(id: number): Promise<Product | null>;
+    updateProduct(id: number, UpdateProductType: any): Promise<Product | null>;
+    getListOfProducts(arr: number[]): Promise<Product[]>;
 }
 //# sourceMappingURL=PostgresProductRepository.d.ts.map

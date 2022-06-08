@@ -38,6 +38,7 @@ describe('ProductService', () => {
     afterEach(async () =>{
         await db.Product.destroy({
             where:{},
+            cascade:true,
             truncate:true
         })
 
@@ -85,8 +86,9 @@ describe('ProductService', () => {
         let service = new ProductService(getProductRepository());
         let product = await makeProductForTest(service);
         let markedForDeletedProduct = await service.deleteProduct(product.id);
-        expect(product.id).to.be.eq(markedForDeletedProduct.id);
-        expect(markedForDeletedProduct.isDeleted).to.be.eq(true);
+        expect(markedForDeletedProduct).to.not.be.eq(null)
+        expect(product.id).to.be.eq(markedForDeletedProduct?.id);
+        expect(markedForDeletedProduct?.isDeleted).to.be.eq(true);
 
 
 
@@ -105,14 +107,14 @@ describe('ProductService', () => {
             imageURL:"https://media.istockphoto.com/photos/banana-bunch-picture-id173242750?s=612x612"
         }
         let updatedProduct = await service.updateProduct(product.id,updateProductParameters)
-
-        expect(updatedProduct.id).to.be.eq(product.id)
-        expect(updatedProduct.name).to.be.eq(updateProductParameters.name)
-        expect(updatedProduct.salePrice).to.be.eq(product.salePrice)
-        expect(updatedProduct.boughtPrice).to.be.eq(product.boughtPrice)
-        expect(updatedProduct.weight).to.be.eq(product.weight)
-        expect(updatedProduct.description).to.be.eq(updateProductParameters.description);
-        expect(updatedProduct.imageURL).to.be.eq(updateProductParameters.imageURL)
+        expect(updatedProduct).to.not.be.eq(null)
+        expect(updatedProduct?.id).to.be.eq(product.id)
+        expect(updatedProduct?.name).to.be.eq(updateProductParameters.name)
+        expect(updatedProduct?.salePrice).to.be.eq(product.salePrice)
+        expect(updatedProduct?.boughtPrice).to.be.eq(product.boughtPrice)
+        expect(updatedProduct?.weight).to.be.eq(product.weight)
+        expect(updatedProduct?.description).to.be.eq(updateProductParameters.description);
+        expect(updatedProduct?.imageURL).to.be.eq(updateProductParameters.imageURL)
 
 
 

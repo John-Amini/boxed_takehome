@@ -34,6 +34,14 @@ module.exports = {
                         key: 'id'
                     }
                 },
+                salePrice: {
+                    allowNull: false,
+                    type: Sequelize.FLOAT
+                },
+                boughtPrice: {
+                    allowNull: false,
+                    type: Sequelize.FLOAT
+                },
                 createdAt: {
                     allowNull: false,
                     type: Sequelize.DATE

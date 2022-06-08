@@ -45,6 +45,12 @@ class ProductService {
             return product;
         });
     }
+    getListOfProducts(arr) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const products = yield this.productRepo.getListOfProducts(arr);
+            return products;
+        });
+    }
 }
 exports.ProductService = ProductService;
 //# sourceMappingURL=ProductService.js.map

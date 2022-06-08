@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostgresProductRepository = void 0;
 const models_1 = __importDefault(require("../db/models"));
+const utils_1 = require("../utils/utils");
 class PostgresProductRepository {
     constructor() {
         this.ProductConn = models_1.default.Product;
@@ -46,27 +47,30 @@ class PostgresProductRepository {
     deleteProduct(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const product = yield this.ProductConn.findByPk(id);
-            product.set({ isDeleted: true });
-            yield product.save();
+            product === null || product === void 0 ? void 0 : product.set({ isDeleted: true });
+            yield (product === null || product === void 0 ? void 0 : product.save());
             return product;
         });
     }
     updateProduct(id, UpdateProductType) {
         return __awaiter(this, void 0, void 0, function* () {
-            UpdateProductType = this.removeNullOrUndefined(UpdateProductType);
+            UpdateProductType = (0, utils_1.removeNullOrUndefined)(UpdateProductType);
             const product = yield this.ProductConn.findByPk(id);
-            product.set(UpdateProductType);
-            yield product.save();
+            product === null || product === void 0 ? void 0 : product.set(UpdateProductType);
+            yield (product === null || product === void 0 ? void 0 : product.save());
             return product;
         });
     }
-    removeNullOrUndefined(updateProduct) {
-        for (const key in updateProduct) {
-            if (updateProduct[key] === null || updateProduct[key] === undefined) {
-                delete updateProduct[key];
-            }
-        }
-        return updateProduct;
+    getListOfProducts(arr) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const products = yield this.ProductConn.findAll({
+                where: {
+                    id: arr,
+                    isDeleted: false
+                }
+            });
+            return products;
+        });
     }
 }
 exports.PostgresProductRepository = PostgresProductRepository;

@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     isDeleted: DataTypes.BOOLEAN
   }, {});
   Product.associate = function(models) {
-    Product.belongsToMany(models.Order,{through:models.OrderProduct})
+    // Product.belongsToMany(models.Order,{through:models.OrderProduct})
   };
   return Product;
 };

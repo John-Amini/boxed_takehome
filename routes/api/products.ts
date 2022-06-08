@@ -45,7 +45,6 @@ router.get('/',asyncHandler(async (req:any,res:any) => {
        //limit is perPage
        let service = new ProductService(getProductRepository());
        let products = await service.getAllProducts(req.query);
-       console.log(req.query);
        return res.json(products)
    } catch(err){
         res.status(500);
@@ -56,7 +55,6 @@ router.get('/',asyncHandler(async (req:any,res:any) => {
 
 router.post('/',asyncHandler(async (req : any,res : any) => {
     try{
-        //error catch hre is good
     let service = new ProductService(getProductRepository());
 
     let newProductParameters :CreateProductType = await createProductInput.validate(req.body)

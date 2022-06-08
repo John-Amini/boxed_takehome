@@ -1,7 +1,7 @@
 import  db from "../db/models"
 import { IProductRepository } from "./IProductRepository"
 import { Product , CreateProductType , UpdateProductType } from "./types"
-
+import {removeNullOrUndefined} from "../utils/utils";
 export class PostgresProductRepository implements IProductRepository{
     ProductConn = db.Product;
     constructor() {
@@ -11,7 +11,7 @@ export class PostgresProductRepository implements IProductRepository{
     public async getAllProducts({page,perPage}):Promise<Product[]>{
         //sequelize uses updatedAt in order to sort for pagination with the least recent being page 1
         page = page === undefined  || page === null ?  0 : page;
-        perPage = perPage === undefined || perPage === null ? 1 : perPage
+        perPage = perPage === undefined || perPage === null ? 10 : perPage
         const products = await this.ProductConn.findAll({
             limit:perPage,
             offset:(page*perPage),
@@ -28,28 +28,30 @@ export class PostgresProductRepository implements IProductRepository{
         const product = await this.ProductConn.findByPk(id);
         return product;
     }
-    public async deleteProduct(id: number): Promise<Product> {
+    public async deleteProduct(id: number): Promise<Product | null> {
         const product = await this.ProductConn.findByPk(id);
-        product.set({isDeleted:true})
-        await product.save();
+        product?.set({isDeleted:true})
+        await product?.save();
         return product;
     }
 
-    public async updateProduct(id: number, UpdateProductType: any): Promise<Product> {
+    public async updateProduct(id: number, UpdateProductType: any): Promise<Product | null> {
 
-        UpdateProductType = this.removeNullOrUndefined(UpdateProductType)
+        UpdateProductType = removeNullOrUndefined(UpdateProductType)
         const product = await this.ProductConn.findByPk(id);
-        product.set(UpdateProductType)
-        await product.save();
+        product?.set(UpdateProductType)
+        await product?.save();
         return product;
     }
 
-    private removeNullOrUndefined(updateProduct){
-        for (const key in updateProduct) {
-            if (updateProduct[key] === null || updateProduct[key] === undefined) {
-              delete updateProduct[key];
+    public async getListOfProducts(arr: number[]): Promise<Product[]> {
+        const products = await this.ProductConn.findAll({
+            where:{
+                id:arr,
+                isDeleted:false
             }
-          }
-          return updateProduct
+        })
+        return products;
     }
+
 }

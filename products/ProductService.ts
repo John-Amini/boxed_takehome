@@ -22,12 +22,18 @@ export class ProductService {
         return products;
     }
 
-    public async deleteProduct(id:number):Promise<Product> {
+    public async deleteProduct(id:number):Promise<Product | null> {
         const product = await this.productRepo.deleteProduct(id);
         return product
     }
-    public async updateProduct(id:number,productUpdate:UpdateProductType):Promise<Product>{
+    public async updateProduct(id:number,productUpdate:UpdateProductType):Promise<Product | null>{
         const product = await this.productRepo.updateProduct(id,productUpdate);
         return product;
     }
+
+    public async getListOfProducts(arr:number[]):Promise<Product[]>{
+        const products = await this.productRepo.getListOfProducts(arr);
+        return products;
+    }
+
 }

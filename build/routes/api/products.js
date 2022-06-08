@@ -55,7 +55,6 @@ exports.router.get('/', (0, express_async_handler_1.default)((req, res) => __awa
         //limit is perPage
         let service = new ProductService_1.ProductService((0, IProductRepository_1.getProductRepository)());
         let products = yield service.getAllProducts(req.query);
-        console.log(req.query);
         return res.json(products);
     }
     catch (err) {
@@ -66,7 +65,6 @@ exports.router.get('/', (0, express_async_handler_1.default)((req, res) => __awa
 })));
 exports.router.post('/', (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        //error catch hre is good
         let service = new ProductService_1.ProductService((0, IProductRepository_1.getProductRepository)());
         let newProductParameters = yield types_1.createProductInput.validate(req.body);
         let newProduct = yield service.createProduct(newProductParameters);

@@ -25,10 +25,14 @@
 module.exports = (sequelize, DataTypes) => {
     const OrderProduct = sequelize.define('OrderProduct', {
         orderId: DataTypes.INTEGER,
-        productId: DataTypes.INTEGER
+        productId: DataTypes.INTEGER,
+        salePrice: DataTypes.FLOAT,
+        boughtPrice: DataTypes.FLOAT
     }, {});
     OrderProduct.associate = function (models) {
         // associations can be defined here
+        // models.Order.belongsToMany(models.Product,{through:OrderProduct})
+        // models.Product.belongsToMany(models.Order,{through:OrderProduct})
     };
     return OrderProduct;
 };

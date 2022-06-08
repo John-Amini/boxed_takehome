@@ -6,8 +6,9 @@ export interface IProductRepository {
     }): Promise<Product[]>;
     createNewProduct(CreateProductType: any): Promise<Product>;
     getProduct(id: number): Promise<Product | null>;
-    deleteProduct(id: number): Promise<Product>;
-    updateProduct(id: number, UpdateProductType: any): Promise<Product>;
+    deleteProduct(id: number): Promise<Product | null>;
+    updateProduct(id: number, UpdateProductType: any): Promise<Product | null>;
+    getListOfProducts(arr: number[]): Promise<Product[]>;
 }
 export declare function getProductRepository(): IProductRepository;
 //# sourceMappingURL=IProductRepository.d.ts.map
