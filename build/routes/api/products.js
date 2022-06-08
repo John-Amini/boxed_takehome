@@ -25,7 +25,12 @@ function getErrorMessage(error) {
         return error.message;
     return String(error);
 }
+//fix error handlers - DONE
+//fix pagination on get all products -DONE
+//add tests for these things
+//figure out how to delete the table fully
 exports.router.get('/:id', (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //error handler good here
     try {
         // "/api/products/9"
         let service = new ProductService_1.ProductService((0, IProductRepository_1.getProductRepository)());
@@ -44,11 +49,12 @@ exports.router.get('/:id', (0, express_async_handler_1.default)((req, res) => __
 })));
 exports.router.get('/', (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        //should be good for errors here
         //need to figure how to paginate all the products here
         //skip is page * perPage
         //limit is perPage
         let service = new ProductService_1.ProductService((0, IProductRepository_1.getProductRepository)());
-        let products = yield service.getAllProducts();
+        let products = yield service.getAllProducts(req.query);
         console.log(req.query);
         return res.json(products);
     }
@@ -60,6 +66,7 @@ exports.router.get('/', (0, express_async_handler_1.default)((req, res) => __awa
 })));
 exports.router.post('/', (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        //error catch hre is good
         let service = new ProductService_1.ProductService((0, IProductRepository_1.getProductRepository)());
         let newProductParameters = yield types_1.createProductInput.validate(req.body);
         let newProduct = yield service.createProduct(newProductParameters);
@@ -69,6 +76,9 @@ exports.router.post('/', (0, express_async_handler_1.default)((req, res) => __aw
         if (err instanceof yup_1.ValidationError) {
             res.status(400);
         }
+        else {
+            res.status(500);
+        }
         let errorMessage = getErrorMessage(err);
         return res.json({ "Error": errorMessage });
     }
@@ -77,6 +87,10 @@ exports.router.delete('/:id', (0, express_async_handler_1.default)((req, res) =>
     try {
         let service = new ProductService_1.ProductService((0, IProductRepository_1.getProductRepository)());
         let markedForDeletedProduct = yield service.deleteProduct(req.params.id);
+        if (markedForDeletedProduct === null) {
+            res.status(400);
+            return res.json({ "Error": "Not Found" });
+        }
         return res.json({ markedForDeletedProduct });
     }
     catch (err) {
@@ -88,12 +102,21 @@ exports.router.delete('/:id', (0, express_async_handler_1.default)((req, res) =>
 exports.router.put('/:id', (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let service = new ProductService_1.ProductService((0, IProductRepository_1.getProductRepository)());
-        let updatedProductParameters = req.body;
+        let updatedProductParameters = yield types_1.updateProductInput.validate(req.body);
         let updatedProduct = yield service.updateProduct(req.params.id, updatedProductParameters);
+        if (updatedProduct === null) {
+            res.status(400);
+            return res.json({ "Error": "Not Found" });
+        }
         return res.json({ updatedProduct });
     }
     catch (err) {
-        res.status(500);
+        if (err instanceof yup_1.ValidationError) {
+            res.status(400);
+        }
+        else {
+            res.status(500);
+        }
         let errorMessage = getErrorMessage(err);
         return res.json({ "Error": errorMessage });
     }

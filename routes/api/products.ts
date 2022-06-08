@@ -12,8 +12,8 @@ function getErrorMessage(error: unknown) {
     return String(error)
   }
 
-//fix error handlers
-//fix pagination on get all products
+//fix error handlers - DONE
+//fix pagination on get all products -DONE
 //add tests for these things
 //figure out how to delete the table fully
 
@@ -44,7 +44,7 @@ router.get('/',asyncHandler(async (req:any,res:any) => {
        //skip is page * perPage
        //limit is perPage
        let service = new ProductService(getProductRepository());
-       let products = await service.getAllProducts();
+       let products = await service.getAllProducts(req.query);
        console.log(req.query);
        return res.json(products)
    } catch(err){

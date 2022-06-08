@@ -17,8 +17,8 @@ export class ProductService {
         return product
     }
 
-    public async getAllProducts(): Promise<Product[]>{
-        const products = await this.productRepo.getAllProducts();
+    public async getAllProducts(pageInfo): Promise<Product[]>{
+        const products = await this.productRepo.getAllProducts(pageInfo);
         return products;
     }
 

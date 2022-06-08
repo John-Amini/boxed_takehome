@@ -18,10 +18,15 @@ class PostgresProductRepository {
     constructor() {
         this.ProductConn = models_1.default.Product;
     }
-    getAllProducts() {
+    getAllProducts({ page, perPage }) {
         return __awaiter(this, void 0, void 0, function* () {
-            //need to figure how to paginate all the products here
-            const products = yield this.ProductConn.findAll();
+            //sequelize uses updatedAt in order to sort for pagination with the least recent being page 1
+            page = page === undefined || page === null ? 0 : page;
+            perPage = perPage === undefined || perPage === null ? 1 : perPage;
+            const products = yield this.ProductConn.findAll({
+                limit: perPage,
+                offset: (page * perPage),
+            });
             return products;
         });
     }

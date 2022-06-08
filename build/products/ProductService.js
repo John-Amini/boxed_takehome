@@ -27,9 +27,9 @@ class ProductService {
             return product;
         });
     }
-    getAllProducts() {
+    getAllProducts(pageInfo) {
         return __awaiter(this, void 0, void 0, function* () {
-            const products = yield this.productRepo.getAllProducts();
+            const products = yield this.productRepo.getAllProducts(pageInfo);
             return products;
         });
     }

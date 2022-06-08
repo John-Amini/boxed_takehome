@@ -2,7 +2,7 @@ import{ PostgresProductRepository }  from "./PostgresProductRepository"
 import { Product , CreateProductType , UpdateProductType } from "./types"
 
 export interface IProductRepository{
-    getAllProducts():Promise<Product[]>
+    getAllProducts({page,perPage}):Promise<Product[]>
     createNewProduct(CreateProductType): Promise<Product>
     getProduct(id:number):Promise<Product | null>
     deleteProduct(id:number):Promise<Product>

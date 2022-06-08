@@ -8,10 +8,14 @@ export class PostgresProductRepository implements IProductRepository{
 
     }
 
-    public async getAllProducts():Promise<Product[]>{
-       //need to figure how to paginate all the products here
-
-        const products = await this.ProductConn.findAll();
+    public async getAllProducts({page,perPage}):Promise<Product[]>{
+        //sequelize uses updatedAt in order to sort for pagination with the least recent being page 1
+        page = page === undefined  || page === null ?  0 : page;
+        perPage = perPage === undefined || perPage === null ? 1 : perPage
+        const products = await this.ProductConn.findAll({
+            limit:perPage,
+            offset:(page*perPage),
+        });
         return products;
     }
 

@@ -7,6 +7,7 @@ export type Product = {
     imageURL:string,
     weight:number,
     description:string,
+    isDeleted:boolean,
     createdAt:Date,
     updatedAt:Date
 }
