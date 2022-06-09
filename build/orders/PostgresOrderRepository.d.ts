@@ -1,6 +1,5 @@
-import { Product } from "../products/types";
 import { IOrderRepository } from "./IOrderRepository";
-import { Order, OrderedProduct, UpdateOrderType } from "./types";
+import { Order, OrderedProduct, ProductWithQuantity, UpdateOrderType } from "./types";
 export declare class PostgresOrderRepository implements IOrderRepository {
     OrderConn: any;
     OrderProductConn: any;
@@ -13,7 +12,7 @@ export declare class PostgresOrderRepository implements IOrderRepository {
     createNewOrder(CreateOrderType: any): Promise<Order>;
     getOrder(id: number): Promise<Order | null>;
     updateOrder(id: number, orderUpdate: UpdateOrderType): Promise<Order | null>;
-    addProductsToOrder(id: number, products: Product[]): Promise<OrderedProduct[]>;
+    addProductsToOrder(id: number, products: ProductWithQuantity[]): Promise<OrderedProduct[]>;
     getProductsFromOrder(id: number): Promise<OrderedProduct[]>;
 }
 //# sourceMappingURL=PostgresOrderRepository.d.ts.map

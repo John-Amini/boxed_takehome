@@ -23,7 +23,7 @@ class PostgresOrderRepository {
     getAllOrders({ page, perPage }) {
         return __awaiter(this, void 0, void 0, function* () {
             page = page === undefined || page === null ? 0 : page;
-            perPage = perPage === undefined || perPage === null ? 1 : perPage;
+            perPage = perPage === undefined || perPage === null ? 10 : perPage;
             const orders = yield this.OrderConn.findAll({
                 limit: perPage,
                 offset: (page * perPage),
@@ -74,12 +74,13 @@ class PostgresOrderRepository {
         return __awaiter(this, void 0, void 0, function* () {
             let orders = [];
             //do bulk create here instead
-            for (let product of products) {
+            for (let productAndQuantity of products) {
                 let orderedParameters = {
                     orderId: id,
-                    productId: product.id,
-                    salePrice: product.salePrice,
-                    boughtPrice: product.boughtPrice
+                    productId: productAndQuantity.product.id,
+                    salePrice: productAndQuantity.product.salePrice,
+                    boughtPrice: productAndQuantity.product.boughtPrice,
+                    quantity: productAndQuantity.quantity
                 };
                 let order = yield this.OrderProductConn.create(orderedParameters);
                 orders.push(order);

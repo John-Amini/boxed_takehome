@@ -3,32 +3,33 @@ import asyncHandler from "express-async-handler"
 import { ValidationError } from "yup";
 import { getOrderRepository } from "../../orders/IOrderRepository";
 import {OrderService} from "../../orders/OrderService"
-import { createOrderInput, CreateOrderType, updateOrderInput, UpdateOrderType } from "../../orders/types";
+import { createOrderInput, CreateOrderType, ProductWithQuantity, updateOrderInput, UpdateOrderType } from "../../orders/types";
 import { getProductRepository } from "../../products/IProductRepository";
 import { ProductService } from "../../products/ProductService";
 import { Product } from "../../products/types";
+import { createOrderedProductsList , getErrorMessage } from "../../utils/utils";
 export const router = express.Router();
 
 
-function getErrorMessage(error: unknown) {
-    if (error instanceof Error) return error.message
-    return String(error)
-  }
+
+
 
 router.post("/",asyncHandler (async (req:any,res:any) => {
     //create new order
     try{
         let service = new OrderService(getOrderRepository());
         let newOrderParameters : CreateOrderType = await createOrderInput.validate(req.body)
-        let products = req.body.products;
+        let productIdsAndQuantity = req.body.products;
+        let products = productIdsAndQuantity.map(x => x.id);
         let productService = new ProductService(getProductRepository());
         let productsArray = await  productService.getListOfProducts(products);
         if(productsArray === null || productsArray.length !== products.length){
             res.status(400);
             return res.json({"Error":`An item does not exist`})
         }
+        let productListWithQuantities : ProductWithQuantity[] = createOrderedProductsList(productIdsAndQuantity,productsArray)
         let newOrder = await service.createOrder(newOrderParameters);
-        let orderedProducts = await service.addProductsToOrder(newOrder.id,productsArray);
+        let orderedProducts = await service.addProductsToOrder(newOrder.id,productListWithQuantities);
 
 
 

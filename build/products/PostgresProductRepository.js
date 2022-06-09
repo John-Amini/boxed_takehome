@@ -23,7 +23,7 @@ class PostgresProductRepository {
         return __awaiter(this, void 0, void 0, function* () {
             //sequelize uses updatedAt in order to sort for pagination with the least recent being page 1
             page = page === undefined || page === null ? 0 : page;
-            perPage = perPage === undefined || perPage === null ? 1 : perPage;
+            perPage = perPage === undefined || perPage === null ? 10 : perPage;
             const products = yield this.ProductConn.findAll({
                 limit: perPage,
                 offset: (page * perPage),

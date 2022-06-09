@@ -3,7 +3,7 @@ import product from "../db/models/product";
 import { Product } from "../products/types";
 import {removeNullOrUndefined}from "../utils/utils";
 import {IOrderRepository} from "./IOrderRepository"
-import { Order, OrderedProduct, OrderedProductType, UpdateOrderType } from "./types"
+import { Order, OrderedProduct, OrderedProductType, ProductWithQuantity, UpdateOrderType } from "./types"
 
 export class PostgresOrderRepository implements IOrderRepository {
     OrderConn = db.Order;
@@ -60,19 +60,21 @@ export class PostgresOrderRepository implements IOrderRepository {
     }
 
 
-public async addProductsToOrder(id: number, products: Product[]) {
+public async addProductsToOrder(id: number, products: ProductWithQuantity[]) {
     let orders : OrderedProduct [] = []
-    //do bulk create here instead
-    for(let product of products){
+    let arrForBulkCreate : OrderedProductType []= []
+    for(let productAndQuantity of products){
         let orderedParameters : OrderedProductType = {
             orderId:id,
-            productId:product.id,
-            salePrice:product.salePrice,
-            boughtPrice:product.boughtPrice
+            productId:productAndQuantity.product.id,
+            salePrice:productAndQuantity.product.salePrice,
+            boughtPrice:productAndQuantity.product.boughtPrice,
+            quantity:productAndQuantity.quantity
         }
-        let order :OrderedProduct = await this.OrderProductConn.create(orderedParameters)
-        orders.push(order)
+        arrForBulkCreate.push(orderedParameters)
     }
+
+    orders = await this.OrderProductConn.bulkCreate(arrForBulkCreate);
     return orders;
 }
 

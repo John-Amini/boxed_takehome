@@ -6,6 +6,7 @@ import db from "../db/models"
 import { ProductService } from "../products/ProductService";
 import { getProductRepository } from "../products/IProductRepository";
 import { Product } from "../products/types";
+import { createOrderedProductsList } from "../utils/utils";
 
 
 //arrange
@@ -37,15 +38,15 @@ describe('OrderService', () => {
         let newOrderParameters = {
             "userId":1,
             "shippingLocation":"South Plainfield, New Jersey",
-            "products":[product.id]
+            "products":[{id:product.id , quantity:3}]
         }
 
-        let productsList = await productService.getListOfProducts(newOrderParameters.products)
+        let productsList = await productService.getListOfProducts([product.id])
         let order = await orderService.createOrder(newOrderParameters);
             expect(productsList).to.not.be.eq(null)
 
-
-        let orderedProducts = await orderService.addProductsToOrder(order.id,productsList);
+        let list = createOrderedProductsList([{id: product.id, quantity:2}],productsList);
+        let orderedProducts = await orderService.addProductsToOrder(order.id,list);
         expect(order.userId).to.be.eq(newOrderParameters.userId)
         expect(order.shippingLocation).to.be.eq(newOrderParameters.shippingLocation);
         expect(orderedProducts[0].productId).to.be.eq(product.id);
@@ -68,7 +69,7 @@ describe('OrderService', () => {
         let newOrderParameters = {
             "userId":1,
             "shippingLocation":"South Plainfield, New Jersey",
-            "products":[product.id]
+            "products":[{id:product.id , quantity:3}]
         }
 
         let order = await orderService.createOrder(newOrderParameters);
@@ -87,13 +88,14 @@ describe('OrderService', () => {
         let newOrderParameters = {
             "userId":1,
             "shippingLocation":"South Plainfield, New Jersey",
-            "products":[product.id]
+            "products":[{id:product.id , quantity:3}]
+
         }
 
         let order = await orderService.createOrder(newOrderParameters);
 
         let updateParameters : UpdateOrderType = {
-            "userId":null,
+            "userId":undefined,
             "shippingLocation":"Plainfield, New Jersey",
             "status":"Completed"
         }
@@ -109,22 +111,25 @@ describe('OrderService', () => {
     it("should get the order" , async () => {
         let orderService = new OrderService(getOrderRepository());
         let productService = new ProductService(getProductRepository());
-        let product = await makeProductForTest(productService)
-
+        let product = await makeProductForTest(productService);
         let newOrderParameters = {
             "userId":1,
             "shippingLocation":"South Plainfield, New Jersey",
-            "products":[product.id]
+            "products":[{id:product.id , quantity:3}]
         }
 
+        let productsList = await productService.getListOfProducts([product.id])
         let order = await orderService.createOrder(newOrderParameters);
+            expect(productsList).to.not.be.eq(null)
+
+        let list = createOrderedProductsList([{id: product.id, quantity:2}],productsList);
+        let orderedProducts = await orderService.addProductsToOrder(order.id,list);
 
 
         let orderRetrieved = await orderService.getOrder(order.id);
         let productsRetrieved = await orderService.getProductsFromOrder(order.id)
         expect(orderRetrieved).to.not.be.eq(null)
         expect(orderRetrieved?.id).to.be.eq(order.id)
-        expect(orderRetrieved?.createdAt).to.be.eq(order.createdAt)
         expect(orderRetrieved?.status).to.be.eq(order.status)
         expect(orderRetrieved?.shippingCost).to.be.eq(order.shippingCost)
         expect(orderRetrieved?.shippingLocation).to.be.eq(order.shippingLocation)

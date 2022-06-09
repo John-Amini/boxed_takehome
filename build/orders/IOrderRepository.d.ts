@@ -1,5 +1,4 @@
-import { Product } from "../products/types";
-import { Order, UpdateOrderType, OrderedProduct } from "./types";
+import { Order, UpdateOrderType, OrderedProduct, ProductWithQuantity } from "./types";
 export interface IOrderRepository {
     getAllOrders({ page, perPage }: {
         page: any;
@@ -9,7 +8,7 @@ export interface IOrderRepository {
     getOrder(id: number): Promise<Order | null>;
     deleteOrder(id: number): Promise<Order | null>;
     updateOrder(id: number, updateOrder: UpdateOrderType): Promise<Order | null>;
-    addProductsToOrder(id: number, products: Product[]): Promise<OrderedProduct[]>;
+    addProductsToOrder(id: number, products: ProductWithQuantity[]): Promise<OrderedProduct[]>;
     getProductsFromOrder(id: number): Promise<OrderedProduct[]>;
 }
 export declare function getOrderRepository(): IOrderRepository;

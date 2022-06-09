@@ -11,4 +11,4 @@ id , name (req) , salePrice (req) , boughtPrice (req) , imageURL , weight (req) 
 
 ordersProductTable
 
-id , orderId , productId , salePrice , boughtPrice , isDeleted
+id , orderId , productId , salePrice , boughtPrice

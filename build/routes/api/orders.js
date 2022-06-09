@@ -27,20 +27,31 @@ function getErrorMessage(error) {
         return error.message;
     return String(error);
 }
+function createOrderedProductsList(productIdsAndQuantity, productsArray) {
+    let map = new Map();
+    for (let curr of productIdsAndQuantity) {
+        map.set(curr.id, curr.quantity);
+    }
+    return productsArray.map(product => {
+        return { product, quantity: map.get(product.id) };
+    });
+}
 exports.router.post("/", (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //create new order
     try {
         let service = new OrderService_1.OrderService((0, IOrderRepository_1.getOrderRepository)());
         let newOrderParameters = yield types_1.createOrderInput.validate(req.body);
-        let products = req.body.products;
+        let productIdsAndQuantity = req.body.products;
+        let products = productIdsAndQuantity.map(x => x.id);
         let productService = new ProductService_1.ProductService((0, IProductRepository_1.getProductRepository)());
         let productsArray = yield productService.getListOfProducts(products);
         if (productsArray === null || productsArray.length !== products.length) {
             res.status(400);
             return res.json({ "Error": `An item does not exist` });
         }
+        let productListWithQuantities = createOrderedProductsList(productIdsAndQuantity, productsArray);
         let newOrder = yield service.createOrder(newOrderParameters);
-        let orderedProducts = yield service.addProductsToOrder(newOrder.id, productsArray);
+        let orderedProducts = yield service.addProductsToOrder(newOrder.id, productListWithQuantities);
         return res.json({ newOrder, orderedProducts });
     }
     catch (err) {
@@ -58,14 +69,13 @@ exports.router.get("/:id", (0, express_async_handler_1.default)((req, res) => __
     //get one order
     try {
         let service = new OrderService_1.OrderService((0, IOrderRepository_1.getOrderRepository)());
-        let productService = new ProductService_1.ProductService((0, IProductRepository_1.getProductRepository)());
         let order = yield service.getOrder(req.params.id);
         if (order === null) {
             res.status(400);
             return res.json({ "Error": "Not Found" });
         }
         let productsOrdered = yield service.getProductsFromOrder(order.id);
-        return res.json(order, productsOrdered);
+        return res.json({ order, productsOrdered });
     }
     catch (err) {
         res.status(500);

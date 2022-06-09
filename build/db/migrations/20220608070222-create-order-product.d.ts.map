@@ -1,1 +1,1 @@
-{"version":3,"file":"20220608070222-create-order-product.d.ts","sourceRoot":"","sources":["../../../db/migrations/20220608070222-create-order-product.js"],"names":[],"mappings":"AAEE,uEA8CC;AA9CD,uEA8CC;AACD,yEAEC;AAFD,yEAEC"}
+{"version":3,"file":"20220608070222-create-order-product.d.ts","sourceRoot":"","sources":["../../../db/migrations/20220608070222-create-order-product.js"],"names":[],"mappings":"AAEE,uEAoDC;AApDD,uEAoDC;AACD,yEAEC;AAFD,yEAEC"}

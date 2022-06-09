@@ -1,7 +1,7 @@
 // import autoBind from "auto-bind"
 import { Product } from "../products/types";
 import { IOrderRepository } from "./IOrderRepository"
-import { Order, CreateOrderType, UpdateOrderType, OrderedProduct } from "./types"
+import { Order, CreateOrderType, UpdateOrderType, OrderedProduct, ProductWithQuantity } from "./types"
 
 export class OrderService {
     constructor(private orderRepo : IOrderRepository){
@@ -33,7 +33,7 @@ export class OrderService {
         return order;
     }
 
-    public async addProductsToOrder(id:number,products : Product[]):Promise<OrderedProduct[]>{
+    public async addProductsToOrder(id:number,products : ProductWithQuantity[]):Promise<OrderedProduct[]>{
         const productsOrdered = await this.orderRepo.addProductsToOrder(id,products);
         return productsOrdered;
     }

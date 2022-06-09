@@ -1,4 +1,5 @@
 import { object, string, number, date, InferType, array } from 'yup';
+import { Product } from '../products/types';
 
 export type Order = {
     id:number,
@@ -21,18 +22,24 @@ export type OrderedProduct= {
     updatedAt:Date
 }
 
-
+export type ProductWithQuantity = {
+    product:Product,
+    quantity:number | undefined
+}
 export type OrderedProductType= {
     orderId:number,
     productId:number,
     salePrice:number,
-    boughtPrice:number
+    boughtPrice:number,
+    quantity:number | undefined,
 }
 
 export const createOrderInput = object ( {
     userId:number().required().positive(),
     shippingLocation:string().required(),
-    products:array().of(number().required()).required().min(1,"No Products"),
+    // products:array().of(number().required()).required().min(1,"No Products"),
+    products:array().of(object({id:number().required(), quantity: number().required()})).required().min(1,"No Products"),
+
 })
 
 export type CreateOrderType = InferType<typeof createOrderInput>
