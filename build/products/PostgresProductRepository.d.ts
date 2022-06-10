@@ -1,5 +1,5 @@
 import { IProductRepository } from "./IProductRepository";
-import { Product } from "./types";
+import { Product, CreateProductType } from "./types";
 export declare class PostgresProductRepository implements IProductRepository {
     ProductConn: any;
     constructor();
@@ -7,7 +7,7 @@ export declare class PostgresProductRepository implements IProductRepository {
         page: any;
         perPage: any;
     }): Promise<Product[]>;
-    createNewProduct(CreateProductType: any): Promise<Product>;
+    createNewProduct(CreateProductType: CreateProductType): Promise<Product>;
     getProduct(id: number): Promise<Product | null>;
     deleteProduct(id: number): Promise<Product | null>;
     updateProduct(id: number, UpdateProductType: any): Promise<Product | null>;

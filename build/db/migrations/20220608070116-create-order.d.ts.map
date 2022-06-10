@@ -1,1 +1,1 @@
-{"version":3,"file":"20220608070116-create-order.d.ts","sourceRoot":"","sources":["../../../db/migrations/20220608070116-create-order.js"],"names":[],"mappings":"AAEE,uEAiCC;AAjCD,uEAiCC;AACD,yEAEC;AAFD,yEAEC"}
+{"version":3,"file":"20220608070116-create-order.d.ts","sourceRoot":"","sources":["../../../db/migrations/20220608070116-create-order.js"],"names":[],"mappings":"AAEE,uEAqCC;AArCD,uEAqCC;AACD,yEAEC;AAFD,yEAEC"}

@@ -6,6 +6,7 @@ export declare type Order = {
     shippingLocation: string;
     shippingCost: number;
     status: string;
+    OrderProducts: OrderedProduct[];
     createdAt: Date;
     updatedAt: Date;
 };
@@ -21,7 +22,7 @@ export declare type OrderedProduct = {
 };
 export declare type ProductWithQuantity = {
     product: Product;
-    quantity: number | undefined;
+    quantity: number;
 };
 export declare type OrderedProductType = {
     orderId: number;
@@ -68,4 +69,9 @@ export declare const updateOrderInput: import("yup/lib/object").OptionalObjectSc
     status: import("yup").StringSchema<string | undefined, import("yup/lib/types").AnyObject, string | undefined>;
 }>>;
 export declare type UpdateOrderType = InferType<typeof updateOrderInput>;
+export declare enum status {
+    Pending = "Pending",
+    Completed = "Completed",
+    Cancelled = "Cancelled"
+}
 //# sourceMappingURL=types.d.ts.map

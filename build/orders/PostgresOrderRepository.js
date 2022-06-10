@@ -20,24 +20,41 @@ class PostgresOrderRepository {
         this.OrderConn = models_1.default.Order;
         this.OrderProductConn = models_1.default.OrderProduct;
     }
-    getAllOrders({ page, perPage }) {
+    getAllOrders(select, { page, perPage }) {
         return __awaiter(this, void 0, void 0, function* () {
             page = page === undefined || page === null ? 0 : page;
             perPage = perPage === undefined || perPage === null ? 10 : perPage;
-            const orders = yield this.OrderConn.findAll({
-                limit: perPage,
-                offset: (page * perPage),
-            });
-            return orders;
+            if (select === undefined) {
+                const orders = yield this.OrderConn.findAll({
+                    limit: perPage,
+                    offset: (page & perPage),
+                    include: { model: models_1.default.OrderProduct }
+                });
+                return orders;
+            }
+            else if (select.includes("OrderProduct")) {
+                const filterSelect = select.filter(x => x !== "OrderProduct");
+                const orders = yield this.OrderConn.findAll({
+                    attributes: filterSelect,
+                    include: { model: models_1.default.OrderProduct }
+                });
+                return orders;
+            }
+            else {
+                const orders = yield this.OrderConn.findAll({
+                    limit: perPage,
+                    offset: (page * perPage),
+                    attributes: select
+                });
+                return orders;
+            }
         });
     }
     deleteOrder(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            //move to service do get in service if completed return null if not call delete
+            console.log("are we here");
             const order = yield this.OrderConn.findByPk(id);
-            if (order.status === "Completed") {
-                //cant cancel an order that is completed
-                return null;
-            }
             order === null || order === void 0 ? void 0 : order.set({ status: "Cancelled" });
             yield (order === null || order === void 0 ? void 0 : order.save());
             return order;
@@ -45,26 +62,31 @@ class PostgresOrderRepository {
     }
     createNewOrder(CreateOrderType) {
         return __awaiter(this, void 0, void 0, function* () {
-            CreateOrderType["status"] = "Pending";
-            CreateOrderType["shippingCost"] = 4.99;
             const order = yield this.OrderConn.create(CreateOrderType);
             return order;
         });
     }
-    getOrder(id) {
+    getOrder(id, select) {
         return __awaiter(this, void 0, void 0, function* () {
-            const order = yield this.OrderConn.findByPk(id);
-            return order;
+            if (select === undefined) {
+                const order = yield this.OrderConn.findByPk(id, { include: { model: models_1.default.OrderProduct } });
+                return order;
+            }
+            else if (select.includes("OrderProduct")) {
+                const filterSelect = select.filter(x => x !== "OrderProduct");
+                const order = yield this.OrderConn.findByPk(id, { attributes: filterSelect, include: { model: models_1.default.OrderProduct } });
+                return order;
+            }
+            else {
+                const order = yield this.OrderConn.findByPk(id, { attributes: select });
+                return order;
+            }
         });
     }
     updateOrder(id, orderUpdate) {
         return __awaiter(this, void 0, void 0, function* () {
             orderUpdate = (0, utils_1.removeNullOrUndefined)(orderUpdate);
             const order = yield this.OrderConn.findByPk(id);
-            if (order.status !== "Pending") {
-                //cant update an order thats been canceled or completed
-                return null;
-            }
             order === null || order === void 0 ? void 0 : order.set(orderUpdate);
             yield (order === null || order === void 0 ? void 0 : order.save());
             return order;
@@ -73,7 +95,7 @@ class PostgresOrderRepository {
     addProductsToOrder(id, products) {
         return __awaiter(this, void 0, void 0, function* () {
             let orders = [];
-            //do bulk create here instead
+            let arrForBulkCreate = [];
             for (let productAndQuantity of products) {
                 let orderedParameters = {
                     orderId: id,
@@ -82,17 +104,10 @@ class PostgresOrderRepository {
                     boughtPrice: productAndQuantity.product.boughtPrice,
                     quantity: productAndQuantity.quantity
                 };
-                let order = yield this.OrderProductConn.create(orderedParameters);
-                orders.push(order);
+                arrForBulkCreate.push(orderedParameters);
             }
+            orders = yield this.OrderProductConn.bulkCreate(arrForBulkCreate);
             return orders;
-        });
-    }
-    getProductsFromOrder(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let products = [];
-            products = yield this.OrderProductConn.findAll({ where: { orderId: id } });
-            return products;
         });
     }
 }

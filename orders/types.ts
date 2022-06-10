@@ -7,6 +7,7 @@ export type Order = {
     shippingLocation:string,
     shippingCost:number,
     status:string,
+    OrderProducts:OrderedProduct[]
     createdAt:Date,
     updatedAt:Date
 }
@@ -24,7 +25,7 @@ export type OrderedProduct= {
 
 export type ProductWithQuantity = {
     product:Product,
-    quantity:number | undefined
+    quantity:number
 }
 export type OrderedProductType= {
     orderId:number,
@@ -52,3 +53,9 @@ export const updateOrderInput = object ( {
 })
 
 export type UpdateOrderType = InferType<typeof updateOrderInput>
+
+export enum status {
+    Pending="Pending",
+    Completed = "Completed",
+    Cancelled = "Cancelled"
+}

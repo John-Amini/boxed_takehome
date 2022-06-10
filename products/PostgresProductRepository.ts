@@ -19,8 +19,8 @@ export class PostgresProductRepository implements IProductRepository{
         return products;
     }
 
-    public async createNewProduct(CreateProductType):Promise<Product> {
-        CreateProductType["isDeleted"] = false
+    public async createNewProduct(CreateProductType:CreateProductType):Promise<Product> {
+        CreateProductType["isDeleted"] = false // move this to service
         const product = await this.ProductConn.create(CreateProductType);
         return product;
     }

@@ -30,11 +30,13 @@ module.exports = (sequelize, DataTypes) => {
         userId: DataTypes.INTEGER,
         shippingLocation: DataTypes.STRING,
         shippingCost: DataTypes.FLOAT,
-        status: DataTypes.STRING
+        status: DataTypes.STRING,
+        totalPrice: DataTypes.FLOAT
     }, {});
     Order.associate = function (models) {
         // associations can be defined here
         // Order.belongsToMany(models.Product,{through:models.OrderProduct})
+        Order.hasMany(models.OrderProduct, { foreignKey: 'orderId' });
     };
     return Order;
 };

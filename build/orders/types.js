@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOrderInput = exports.createOrderInput = void 0;
+exports.status = exports.updateOrderInput = exports.createOrderInput = void 0;
 const yup_1 = require("yup");
 exports.createOrderInput = (0, yup_1.object)({
     userId: (0, yup_1.number)().required().positive(),
@@ -14,4 +14,10 @@ exports.updateOrderInput = (0, yup_1.object)({
     shippingLocation: (0, yup_1.string)(),
     status: (0, yup_1.string)(),
 });
+var status;
+(function (status) {
+    status["Pending"] = "Pending";
+    status["Completed"] = "Completed";
+    status["Cancelled"] = "Cancelled";
+})(status = exports.status || (exports.status = {}));
 //# sourceMappingURL=types.js.map

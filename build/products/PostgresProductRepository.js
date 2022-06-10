@@ -33,7 +33,7 @@ class PostgresProductRepository {
     }
     createNewProduct(CreateProductType) {
         return __awaiter(this, void 0, void 0, function* () {
-            CreateProductType["isDeleted"] = false;
+            CreateProductType["isDeleted"] = false; // move this to service
             const product = yield this.ProductConn.create(CreateProductType);
             return product;
         });

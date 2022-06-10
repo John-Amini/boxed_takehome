@@ -22,6 +22,6 @@ export  function createOrderedProductsList(productIdsAndQuantity,productsArray:P
     }
 
     return productsArray.map(product => {
-        return {product,quantity:map.get(product.id)}
+        return {product,quantity:map.get(product.id) ?? 0}
     })
 }

@@ -21,21 +21,8 @@ const OrderService_1 = require("../../orders/OrderService");
 const types_1 = require("../../orders/types");
 const IProductRepository_1 = require("../../products/IProductRepository");
 const ProductService_1 = require("../../products/ProductService");
+const utils_1 = require("../../utils/utils");
 exports.router = express_1.default.Router();
-function getErrorMessage(error) {
-    if (error instanceof Error)
-        return error.message;
-    return String(error);
-}
-function createOrderedProductsList(productIdsAndQuantity, productsArray) {
-    let map = new Map();
-    for (let curr of productIdsAndQuantity) {
-        map.set(curr.id, curr.quantity);
-    }
-    return productsArray.map(product => {
-        return { product, quantity: map.get(product.id) };
-    });
-}
 exports.router.post("/", (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //create new order
     try {
@@ -49,10 +36,10 @@ exports.router.post("/", (0, express_async_handler_1.default)((req, res) => __aw
             res.status(400);
             return res.json({ "Error": `An item does not exist` });
         }
-        let productListWithQuantities = createOrderedProductsList(productIdsAndQuantity, productsArray);
-        let newOrder = yield service.createOrder(newOrderParameters);
-        let orderedProducts = yield service.addProductsToOrder(newOrder.id, productListWithQuantities);
-        return res.json({ newOrder, orderedProducts });
+        let productListWithQuantities = (0, utils_1.createOrderedProductsList)(productIdsAndQuantity, productsArray);
+        let newOrder = yield service.createOrder(newOrderParameters, productListWithQuantities);
+        // let orderedProducts = await service.addProductsToOrder(newOrder.id,productListWithQuantities);
+        return res.json({ newOrder });
     }
     catch (err) {
         if (err instanceof yup_1.ValidationError) {
@@ -61,38 +48,42 @@ exports.router.post("/", (0, express_async_handler_1.default)((req, res) => __aw
         else {
             res.status(500);
         }
-        let errorMessage = getErrorMessage(err);
+        let errorMessage = (0, utils_1.getErrorMessage)(err);
         return res.json({ "Error": errorMessage });
     }
 })));
 exports.router.get("/:id", (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     //get one order
     try {
         let service = new OrderService_1.OrderService((0, IOrderRepository_1.getOrderRepository)());
-        let order = yield service.getOrder(req.params.id);
+        let query = req.query;
+        let select = (_a = query.select) === null || _a === void 0 ? void 0 : _a.split(",");
+        let order = yield service.getOrder(req.params.id, select);
         if (order === null) {
             res.status(400);
             return res.json({ "Error": "Not Found" });
         }
-        let productsOrdered = yield service.getProductsFromOrder(order.id);
-        return res.json({ order, productsOrdered });
+        return res.json({ order });
     }
     catch (err) {
         res.status(500);
-        let errorMessage = getErrorMessage(err);
+        let errorMessage = (0, utils_1.getErrorMessage)(err);
         return res.json({ "Error": errorMessage });
     }
 })));
 exports.router.get("/", (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //get all orders
+    var _b;
     try {
+        let select = (_b = req.query.select) === null || _b === void 0 ? void 0 : _b.split(",");
         let service = new OrderService_1.OrderService((0, IOrderRepository_1.getOrderRepository)());
-        let orders = yield service.getAllOrders(req.query);
+        let orders = yield service.getAllOrders(select, req.query);
         return res.json(orders);
     }
     catch (err) {
         res.status(500);
-        let errorMessage = getErrorMessage(err);
+        let errorMessage = (0, utils_1.getErrorMessage)(err);
         return res.json({ "Error": errorMessage });
     }
 })));
@@ -109,7 +100,7 @@ exports.router.delete("/:id", (0, express_async_handler_1.default)((req, res) =>
     }
     catch (err) {
         res.status(500);
-        let errorMessage = getErrorMessage(err);
+        let errorMessage = (0, utils_1.getErrorMessage)(err);
         return res.json({ "Error": errorMessage });
     }
 })));
@@ -132,7 +123,7 @@ exports.router.put("/:id", (0, express_async_handler_1.default)((req, res) => __
         else {
             res.status(500);
         }
-        let errorMessage = getErrorMessage(err);
+        let errorMessage = (0, utils_1.getErrorMessage)(err);
         return res.json({ "Error": errorMessage });
     }
 })));

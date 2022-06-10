@@ -18,8 +18,10 @@ router.post("/",asyncHandler (async (req:any,res:any) => {
     //create new order
     try{
         let service = new OrderService(getOrderRepository());
+
         let newOrderParameters : CreateOrderType = await createOrderInput.validate(req.body)
         let productIdsAndQuantity = req.body.products;
+
         let products = productIdsAndQuantity.map(x => x.id);
         let productService = new ProductService(getProductRepository());
         let productsArray = await  productService.getListOfProducts(products);
@@ -28,12 +30,12 @@ router.post("/",asyncHandler (async (req:any,res:any) => {
             return res.json({"Error":`An item does not exist`})
         }
         let productListWithQuantities : ProductWithQuantity[] = createOrderedProductsList(productIdsAndQuantity,productsArray)
-        let newOrder = await service.createOrder(newOrderParameters);
-        let orderedProducts = await service.addProductsToOrder(newOrder.id,productListWithQuantities);
+        let newOrder = await service.createOrder(newOrderParameters,productListWithQuantities);
+        // let orderedProducts = await service.addProductsToOrder(newOrder.id,productListWithQuantities);
 
 
 
-        return res.json({newOrder,orderedProducts})
+        return res.json({newOrder})
     }
     catch(err){
         if(err instanceof ValidationError){
@@ -51,16 +53,17 @@ router.get("/:id",asyncHandler (async (req:any,res:any) => {
     try{
 
         let service = new OrderService(getOrderRepository());
-        let order = await service.getOrder(req.params.id)
+        let query = req.query;
+        let select: string [] | undefined = query.select?.split(",")
+        let order = await service.getOrder(req.params.id,select)
 
         if(order === null){
 
             res.status(400)
             return res.json({"Error":"Not Found"})
         }
-        let productsOrdered = await service.getProductsFromOrder(order.id);
 
-        return res.json({order,productsOrdered})
+        return res.json({order})
     }
     catch(err :any){
         res.status(500);
@@ -75,9 +78,10 @@ router.get("/",asyncHandler (async (req:any,res:any) => {
     //get all orders
 
     try {
+        let select: string [] | undefined = req.query.select?.split(",")
 
         let service = new OrderService(getOrderRepository());
-        let orders = await service.getAllOrders(req.query);
+        let orders = await service.getAllOrders(select,req.query);
         return res.json(orders)
     } catch(err){
          res.status(500);

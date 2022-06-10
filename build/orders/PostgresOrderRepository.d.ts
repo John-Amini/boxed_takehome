@@ -4,15 +4,14 @@ export declare class PostgresOrderRepository implements IOrderRepository {
     OrderConn: any;
     OrderProductConn: any;
     constructor();
-    getAllOrders({ page, perPage }: {
-        page: any;
-        perPage: any;
+    getAllOrders(select: string[] | undefined, { page, perPage }: {
+        page: number;
+        perPage: number;
     }): Promise<Order[]>;
     deleteOrder(id: number): Promise<Order | null>;
     createNewOrder(CreateOrderType: any): Promise<Order>;
-    getOrder(id: number): Promise<Order | null>;
+    getOrder(id: number, select: string[] | undefined): Promise<Order | null>;
     updateOrder(id: number, orderUpdate: UpdateOrderType): Promise<Order | null>;
     addProductsToOrder(id: number, products: ProductWithQuantity[]): Promise<OrderedProduct[]>;
-    getProductsFromOrder(id: number): Promise<OrderedProduct[]>;
 }
 //# sourceMappingURL=PostgresOrderRepository.d.ts.map
