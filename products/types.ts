@@ -22,15 +22,8 @@ export const createProductInput = object({
 
   });
 
-  export type CreateProductType = InferType<typeof createProductInput>;
-// export type CreateProductType = {
-//     name:string,
-//     salePrice:number,
-//     boughtPrice:number,
-//     imageURL?:string,
-//     weight:number,
-//     description?:string
-// }
+export type CreateProductType = InferType<typeof createProductInput>;
+
 
 export const updateProductInput = object({
     name: string(),
@@ -43,11 +36,3 @@ export const updateProductInput = object({
   });
 
   export type UpdateProductType = InferType<typeof updateProductInput>;
-// export type UpdateProductType = {
-//     name?:string,
-//     salePrice?:number,
-//     boughtPrice?:number,
-//     imageURL?:string,
-//     weight?:number,
-//     description?:string
-// };

@@ -1,4 +1,3 @@
-// import autoBind from "auto-bind"
 import { Product } from "../products/types";
 import { IOrderRepository } from "./IOrderRepository"
 import {status, Order, CreateOrderType, UpdateOrderType, OrderedProduct, ProductWithQuantity } from "./types"

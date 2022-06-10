@@ -15,7 +15,6 @@ export const router = express.Router();
 
 
 router.post("/",asyncHandler (async (req:any,res:any) => {
-    //create new order
     try{
         let service = new OrderService(getOrderRepository());
 
@@ -31,9 +30,6 @@ router.post("/",asyncHandler (async (req:any,res:any) => {
         }
         let productListWithQuantities : ProductWithQuantity[] = createOrderedProductsList(productIdsAndQuantity,productsArray)
         let newOrder = await service.createOrder(newOrderParameters,productListWithQuantities);
-        // let orderedProducts = await service.addProductsToOrder(newOrder.id,productListWithQuantities);
-
-
 
         return res.json({newOrder})
     }
@@ -49,7 +45,6 @@ router.post("/",asyncHandler (async (req:any,res:any) => {
   }))
 
 router.get("/:id",asyncHandler (async (req:any,res:any) => {
-    //get one order
     try{
 
         let service = new OrderService(getOrderRepository());
@@ -75,7 +70,6 @@ router.get("/:id",asyncHandler (async (req:any,res:any) => {
 }))
 
 router.get("/",asyncHandler (async (req:any,res:any) => {
-    //get all orders
 
     try {
         let select: string [] | undefined = req.query.select?.split(",")
@@ -95,7 +89,6 @@ router.get("/",asyncHandler (async (req:any,res:any) => {
 router.delete("/:id",asyncHandler (async (req:any,res:any) => {
     try{
         let service = new OrderService(getOrderRepository());
-        console.log(req.params.id)
         let canceledOrder = await service.deleteOrder(req.params.id)
         if(canceledOrder === null){
             res.status(400)
@@ -113,7 +106,6 @@ router.delete("/:id",asyncHandler (async (req:any,res:any) => {
 
 
 router.put("/:id",asyncHandler (async (req:any,res:any) => {
-    //update order
     try{
         let service = new OrderService(getOrderRepository());
         let updatedOrderParameters :UpdateOrderType = await updateOrderInput.validate(req.body)

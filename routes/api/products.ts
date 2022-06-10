@@ -12,16 +12,8 @@ function getErrorMessage(error: unknown) {
     return String(error)
   }
 
-//fix error handlers - DONE
-//fix pagination on get all products -DONE
-//add tests for these things
-//figure out how to delete the table fully
-
-
 router.get('/:id',asyncHandler(async (req : any, res:any) => {
-    //error handler good here
     try{
-        // "/api/products/9"
         let service = new ProductService(getProductRepository());
         let product = await service.getProduct(req.params.id)
         if(product === null){
@@ -39,10 +31,7 @@ router.get('/:id',asyncHandler(async (req : any, res:any) => {
 
 router.get('/',asyncHandler(async (req:any,res:any) => {
    try {
-       //should be good for errors here
-       //need to figure how to paginate all the products here
-       //skip is page * perPage
-       //limit is perPage
+
        let service = new ProductService(getProductRepository());
        let products = await service.getAllProducts(req.query);
        return res.json(products)

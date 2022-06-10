@@ -1,4 +1,3 @@
-// import autoBind from "auto-bind"
 import { IProductRepository } from "./IProductRepository"
 import { CreateProductType, Product, UpdateProductType } from "./types"
 
@@ -8,6 +7,7 @@ export class ProductService {
     }
 
     public async createProduct(newProduct:CreateProductType): Promise<Product>{
+        newProduct["isDeleted"] = false;
         const product = await this.productRepo.createNewProduct(newProduct)
         return product
     }

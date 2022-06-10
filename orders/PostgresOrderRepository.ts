@@ -8,9 +8,6 @@ export class PostgresOrderRepository implements IOrderRepository {
     OrderConn = db.Order;
     OrderProductConn = db.OrderProduct
     constructor(){
-
-
-
     }
 
    public async getAllOrders(select:string[] | undefined,{ page, perPage }: { page: number; perPage: number; }): Promise<Order[]> {
@@ -43,8 +40,6 @@ export class PostgresOrderRepository implements IOrderRepository {
     }
 
     public async deleteOrder(id: number): Promise<Order | null> {
-       //move to service do get in service if completed return null if not call delete
-       console.log("are we here")
         const order = await this.OrderConn.findByPk(id);
         order?.set({status:"Cancelled"})
         await order?.save();

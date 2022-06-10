@@ -1,5 +1,4 @@
 const config = require(__dirname + '/index.js');
-console.log(config)
 const db = config.db;
 const username = db.username;
 const password = db.password;

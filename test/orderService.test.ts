@@ -135,6 +135,36 @@ describe('OrderService', () => {
 
     })
 
+
+    it("should get all orders" , async () => {
+        let orderService = new OrderService(getOrderRepository());
+        let productService = new ProductService(getProductRepository());
+        let product = await makeProductForTest(productService);
+        let newOrderParameters = {
+            "userId":1,
+            "shippingLocation":"South Plainfield, New Jersey",
+            "products":[{id:product.id , quantity:3}]
+        }
+
+let productsList = await productService.getListOfProducts([product.id])
+expect(productsList).to.not.be.eq(null)
+
+let list = createOrderedProductsList([{id: product.id, quantity:2}],productsList);
+
+let order = await orderService.createOrder(newOrderParameters,list);
+
+let order2 = await orderService.createOrder(newOrderParameters,list);
+
+
+
+let orderRetrieved = await orderService.getAllOrders(["id","totalPrice"],{});
+expect(orderRetrieved).to.not.be.eq(null);
+expect(orderRetrieved[0]?.id).to.be.eq(order.id)
+expect(orderRetrieved[1]?.id).to.be.eq(order2.id)
+
+
+    })
+
 })
 
 async function makeProductForTest(service : ProductService):Promise<Product>{

@@ -9,7 +9,6 @@ export class PostgresProductRepository implements IProductRepository{
     }
 
     public async getAllProducts({page,perPage}):Promise<Product[]>{
-        //sequelize uses updatedAt in order to sort for pagination with the least recent being page 1
         page = page === undefined  || page === null ?  0 : page;
         perPage = perPage === undefined || perPage === null ? 10 : perPage
         const products = await this.ProductConn.findAll({
@@ -20,7 +19,7 @@ export class PostgresProductRepository implements IProductRepository{
     }
 
     public async createNewProduct(CreateProductType:CreateProductType):Promise<Product> {
-        CreateProductType["isDeleted"] = false // move this to service
+
         const product = await this.ProductConn.create(CreateProductType);
         return product;
     }

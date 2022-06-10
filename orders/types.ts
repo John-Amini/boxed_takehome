@@ -38,13 +38,11 @@ export type OrderedProductType= {
 export const createOrderInput = object ( {
     userId:number().required().positive(),
     shippingLocation:string().required(),
-    // products:array().of(number().required()).required().min(1,"No Products"),
     products:array().of(object({id:number().required(), quantity: number().required()})).required().min(1,"No Products"),
 
 })
 
 export type CreateOrderType = InferType<typeof createOrderInput>
-//look into making status an enumerable instead of a string for type here
 export const updateOrderInput = object ( {
     userId:number(),
     shippingLocation:string(),
